@@ -11,18 +11,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 
+import static org.therolf.ptitchvo.GameConstants.*;
+
 public class PtitChvoPanel extends JPanel {
-
-    private static final int COUNT = 15;
-    private static final int ECURIE = 6;
-    private static final int CENTER = COUNT/2;
-
-    private static final float CELL_SIZE= 0.85f;
-
-    public static final Color[] colors = { new Color(0xffe783), new Color(0x95e5e5), new Color(0xff896a), new Color(0xcfff39) };
-    public static final Color[] darkColors = { new Color(0xffcd00), new Color(0x2fcdcd), new Color(0xff3000), new Color(0x9acd00) };
-
-    private static final Color textColor = new Color(0x818181);
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -115,7 +106,7 @@ public class PtitChvoPanel extends JPanel {
             textDirectioner.down(1);
 
             for(int ni = 6; ni > 0; --ni) {
-                g.setColor(textColor);
+                g.setColor(TEXT_COLOR);
                 textDrawer.draw(g, "" + ni);
                 textDirectioner.down(1);
             }

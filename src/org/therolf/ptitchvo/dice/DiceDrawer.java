@@ -1,12 +1,11 @@
-package org.therolf.ptitchvo.drawer;
+package org.therolf.ptitchvo.dice;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 
 public class DiceDrawer {
 
-    private static final int SIZE = 43;
-    private static final int CI_SIZE = 6;
+    private static final int SIZE = 83;
+    private static final int CI_SIZE = 16;
     private static final int BOR = 1;
 
     private static final float leftPercent = 1.f/4.f;
@@ -73,6 +72,6 @@ public class DiceDrawer {
         offsetX -= CI_SIZE / 2;
         offsetY -= CI_SIZE / 2;
 
-        g.fillRect(offsetX, offsetY, CI_SIZE, CI_SIZE);
+        g.fillOval(offsetX, offsetY, CI_SIZE, CI_SIZE);
     }
 }

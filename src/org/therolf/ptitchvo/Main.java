@@ -1,5 +1,7 @@
 package org.therolf.ptitchvo;
 
+import org.therolf.ptitchvo.game.GameManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -35,6 +37,9 @@ public class Main extends JFrame {
                 m.setMinimumSize(newd);
             }
         });
+
+        GameManager manager = new GameManager(this, plateau, panel);
+        manager.nextPlayer();
     }
 
     public static void main(String[] args) {

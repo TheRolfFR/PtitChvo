@@ -1,8 +1,7 @@
 package org.therolf.ptitchvo.game;
 
+import org.therolf.ptitchvo.DicePanel;
 import org.therolf.ptitchvo.PtitChvoPanel;
-import org.therolf.ptitchvo.RightPanel;
-import org.therolf.ptitchvo.dice.RollListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,18 +9,41 @@ import java.util.ArrayList;
 
 import static org.therolf.ptitchvo.GameConstants.*;
 
-public class GameManager {
+public final class GameManager {
 
-    private PtitChvoPanel gamePanel = null;
-    private RightPanel rightPanel = null;
-
+    private PtitChvoPanel gamePanel; // = null
+    private JButton diceButton; // = null
+    private DicePanel dicePanel; // = null
     private ArrayList<Player> playerList = new ArrayList<>(4);
+    private int currentPlayerIndex;
 
-    private int currentPlayerIndex = 0;
-
-    public GameManager(Component c, PtitChvoPanel gamePanel, RightPanel rightPanel) {
+    public void setGamePanel(PtitChvoPanel gamePanel) {
         this.gamePanel = gamePanel;
-        this.rightPanel = rightPanel;
+    }
+
+    public void setDiceButton(JButton diceButton) {
+        this.diceButton = diceButton;
+    }
+
+    public void setDicePanel(DicePanel dicePanel) {
+        this.dicePanel = dicePanel;
+    }
+
+    private static GameManager instance = null;
+
+    public static GameManager getInstance() {
+        if(instance == null) {
+            instance = new GameManager();
+        }
+
+        return instance;
+    }
+
+    private GameManager() {}
+
+    public void start(Component c) {
+        this.playerList.clear();
+        currentPlayerIndex = 0;
 
         int nb = -1;
 
@@ -72,7 +94,9 @@ public class GameManager {
             System.out.println(p);
         }
 
-        rightPanel.addRollEndListener(v -> {
+        newRound(currentPlayerIndex);
+
+        dicePanel.addRollEndListener(v -> {
             nextPlayer();
         });
     }
@@ -84,11 +108,11 @@ public class GameManager {
     }
 
     private void newRound(int playerIndex) {
-        rightPanel.hideDice();
-        rightPanel.setPlayer(playerIndex, playerList.get(playerIndex).getName());
+        dicePanel.hideDice();
+        dicePanel.setPlayer(playerIndex, playerList.get(playerIndex).getName());
 
         if(currentPlayer() instanceof AIPlayer) {
-            rightPanel.triggerRoll();
+            diceButton.doClick();
         }
     }
 

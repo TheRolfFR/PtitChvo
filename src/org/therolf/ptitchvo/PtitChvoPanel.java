@@ -4,16 +4,20 @@ import org.therolf.ptitchvo.drawer.Directioner;
 import org.therolf.ptitchvo.drawer.DiscDrawer;
 import org.therolf.ptitchvo.drawer.RectangleDrawer;
 import org.therolf.ptitchvo.drawer.TextDrawer;
+import org.therolf.ptitchvo.game.GameManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 
 import static org.therolf.ptitchvo.GameConstants.*;
 
 public class PtitChvoPanel extends JPanel {
+
+    public PtitChvoPanel(int size) {
+        GameManager.getInstance().setGamePanel(this);
+        this.resize(size);
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -117,10 +121,6 @@ public class PtitChvoPanel extends JPanel {
             AffineTransform rotate = AffineTransform.getRotateInstance(-Math.PI / 2.0, spacew * COUNT / 2.f, spacew * COUNT / 2.f);
             g2d.transform(rotate);
         }
-    }
-
-    public PtitChvoPanel(int size) {
-        this.resize(size);
     }
 
     public void resize(int size) {

@@ -11,8 +11,6 @@ public class Main extends JFrame {
 
     private static final int PLATEAU_SIDE = 800;
 
-    PtitChvoPanel plateau = new PtitChvoPanel(PLATEAU_SIDE);
-
     Main() {
         this.setSize(1200, PLATEAU_SIDE);
         this.setTitle("PtitChvo");
@@ -21,6 +19,7 @@ public class Main extends JFrame {
         this.setLayout(new BorderLayout());
 //        this.setResizable(false);
 
+        PtitChvoPanel plateau = new PtitChvoPanel(PLATEAU_SIDE);
         this.getContentPane().add(plateau, BorderLayout.CENTER);
 
         RightPanel panel = new RightPanel();
@@ -38,8 +37,7 @@ public class Main extends JFrame {
             }
         });
 
-        GameManager manager = new GameManager(this, plateau, panel);
-        manager.nextPlayer();
+        GameManager.getInstance().start(this);
     }
 
     public static void main(String[] args) {

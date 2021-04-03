@@ -5,15 +5,11 @@ import org.therolf.ptitchvo.game.GameManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import static org.therolf.ptitchvo.GameConstants.darkColors;
 
 
 public class RightPanel extends JPanel {
 
-    private JButton playButton;
+    private JButton diceButton;
     private DicePanel dice;
     private JLabel info;
 
@@ -22,10 +18,12 @@ public class RightPanel extends JPanel {
         this.setMinimumSize(new Dimension(150, 0));
         this.setPreferredSize(new Dimension(150, 0));
 
-        playButton = new JButton("Lancer le dé");
-        this.add(playButton);
+        diceButton = new JButton("Lancer le dé");
+        GameManager.getInstance().setDiceButton(diceButton);
+        this.add(diceButton);
 
         dice = new DicePanel();
+        GameManager.getInstance().setDicePanel(dice);
         this.add(dice);
 
         info = new JLabel("<html><b>Informations de la partie:</b><br></html>");
@@ -34,12 +32,12 @@ public class RightPanel extends JPanel {
         this.add(info);
 
         dice.addRollEndListener(v -> {
-            playButton.setEnabled(true);
+            diceButton.setEnabled(true);
         });
 
-        playButton.addActionListener(e -> {
+        diceButton.addActionListener(e -> {
             dice.startRoll();
-            playButton.setEnabled(false);
+            diceButton.setEnabled(false);
         });
     }
 
@@ -56,6 +54,6 @@ public class RightPanel extends JPanel {
     }
 
     public void triggerRoll() {
-        playButton.doClick();
+        diceButton.doClick();
     }
 }

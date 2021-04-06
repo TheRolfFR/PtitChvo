@@ -4,8 +4,8 @@ public class Directioner {
 
     public enum Direction {NORTH, EAST, SOUTH, WEST};
 
-    private float originX;
-    private float originY;
+    private final float originX; // = 0
+    private final float originY; // = 0
     private float movex = 0;
     private float movey = 0;
 
@@ -92,5 +92,9 @@ public class Directioner {
     public void setMove(float x, float y) {
         movex = x;
         movey = y;
+    }
+
+    public void resetMove() {
+        setMove(0, 0);
     }
 }

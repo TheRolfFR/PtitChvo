@@ -18,11 +18,11 @@ public class TextDrawer extends CenterDrawer {
     private Font font = new Font(fontFamily, fontStyle, 11);
 
     public TextDrawer(Directioner directioner, String text, Graphics g) {
-        super(directioner);
         this.text = text;
 
         this.g = g;
 
+        this.setDirectioner(directioner);
         this.setFontSize(20);
     }
 

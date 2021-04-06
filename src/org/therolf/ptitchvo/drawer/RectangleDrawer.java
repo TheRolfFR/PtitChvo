@@ -3,9 +3,6 @@ package org.therolf.ptitchvo.drawer;
 import java.awt.*;
 
 public class RectangleDrawer extends CenterDrawer {
-    public RectangleDrawer(Directioner directioner) {
-        super(directioner);
-    }
 
     @Override
     public void draw(Graphics g) {

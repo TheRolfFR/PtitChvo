@@ -3,9 +3,6 @@ package org.therolf.ptitchvo.drawer;
 import java.awt.*;
 
 public class DiscDrawer extends CenterDrawer {
-    public DiscDrawer(Directioner directioner) {
-        super(directioner);
-    }
 
     public void setDiameter(float dia) {
         setSide(dia);

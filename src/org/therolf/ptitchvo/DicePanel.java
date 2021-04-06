@@ -1,7 +1,7 @@
 package org.therolf.ptitchvo;
 
-import org.therolf.ptitchvo.dice.RollListener;
 import org.therolf.ptitchvo.dice.DiceDrawer;
+import org.therolf.ptitchvo.listeners.RollListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,15 +15,28 @@ public class DicePanel extends JLabel {
 
     private Timer timer;
     private int diceTurn = 0;
-    private Random random;
-    private Random diceRandom;
+    private final Random random;
+    private final Random diceRandom;
 
     private int lastDiceValue = 0;
 
-    private ArrayList<RollListener> rollEnd = new ArrayList<>();
+    private final ArrayList<RollListener> rollEnd = new ArrayList<>();
 
     public void addRollEndListener(RollListener rollEnd) {
         this.rollEnd.add(rollEnd);
+    }
+
+    private static DicePanel instance; //= null
+    public static DicePanel getInstance() {
+        if(instance == null) {
+            instance = new DicePanel();
+        }
+
+        return instance;
+    }
+
+    public static int getLastDice() {
+        return getInstance().lastDiceValue;
     }
 
     @Override
@@ -43,8 +56,8 @@ public class DicePanel extends JLabel {
         this.repaint();
     }
 
-    public DicePanel() {
-        this.setText("<html><div style=\"padding: 5px;\">Tour du joueur rouge</div></html>");
+    private DicePanel() {
+        this.setText("");
         this.setVerticalAlignment(SwingConstants.TOP);
         this.setHorizontalAlignment(SwingConstants.CENTER);
 

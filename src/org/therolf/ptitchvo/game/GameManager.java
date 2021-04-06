@@ -1,7 +1,6 @@
 package org.therolf.ptitchvo.game;
 
 import org.therolf.ptitchvo.DicePanel;
-import org.therolf.ptitchvo.PtitChvoPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,22 +10,12 @@ import static org.therolf.ptitchvo.GameConstants.*;
 
 public final class GameManager {
 
-    private PtitChvoPanel gamePanel; // = null
-    private JButton diceButton; // = null
-    private DicePanel dicePanel; // = null
-    private ArrayList<Player> playerList = new ArrayList<>(4);
-    private int currentPlayerIndex;
+    private static JButton diceButton; // = null
+    private static final ArrayList<Player> playerList = new ArrayList<>(4);
+    private static int currentPlayerIndex;
 
-    public void setGamePanel(PtitChvoPanel gamePanel) {
-        this.gamePanel = gamePanel;
-    }
-
-    public void setDiceButton(JButton diceButton) {
-        this.diceButton = diceButton;
-    }
-
-    public void setDicePanel(DicePanel dicePanel) {
-        this.dicePanel = dicePanel;
+    public void setDiceButton(JButton button) {
+        diceButton = button;
     }
 
     private static GameManager instance = null;
@@ -41,8 +30,8 @@ public final class GameManager {
 
     private GameManager() {}
 
-    public void start(Component c) {
-        this.playerList.clear();
+    public static void start(Component c) {
+        playerList.clear();
         currentPlayerIndex = 0;
 
         int nb = -1;
@@ -96,27 +85,52 @@ public final class GameManager {
 
         newRound(currentPlayerIndex);
 
-        dicePanel.addRollEndListener(v -> {
-            nextPlayer();
+        DicePanel.getInstance().addRollEndListener(v -> {
+            Player currentPlayer = getCurrentPlayer();
+            ActionPossible[] actionPossibles = currentPlayer.actionsPossible(v);
+            System.out.println(currentPlayer);
+
+            if(actionPossibles.length > 0) {
+                // autoplay if real player has one action or is ai
+                if(actionPossibles.length == 1 || currentPlayer instanceof AIPlayer) {
+                    currentPlayer.act(actionPossibles[0]);
+                }
+            } else {
+                actionEnded();
+            }
         });
     }
 
-    public void nextPlayer() {
+    public static void actionEnded() {
+        // replay
+        if(DicePanel.getLastDice() == 6) {
+            diceButton.setEnabled(true);
+
+            if(GameManager.getCurrentPlayer() instanceof AIPlayer) {
+                diceButton.doClick();
+            }
+        } else {
+            nextPlayer();
+        }
+    }
+
+    public static void nextPlayer() {
         currentPlayerIndex = (currentPlayerIndex + 1) % playerList.size();
 
         newRound(currentPlayerIndex);
     }
 
-    private void newRound(int playerIndex) {
-        dicePanel.hideDice();
-        dicePanel.setPlayer(playerIndex, playerList.get(playerIndex).getName());
+    private static void newRound(int playerIndex) {
+        DicePanel.getInstance().hideDice();
+        DicePanel.getInstance().setPlayer(playerIndex, playerList.get(playerIndex).getName());
+        diceButton.setEnabled(true);
 
-        if(currentPlayer() instanceof AIPlayer) {
+        if(getCurrentPlayer() instanceof AIPlayer) {
             diceButton.doClick();
         }
     }
 
-    public Player currentPlayer() {
+    public static Player getCurrentPlayer() {
         return playerList.get(currentPlayerIndex);
     }
 }

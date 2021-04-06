@@ -9,7 +9,10 @@ public abstract class CenterDrawer {
 
     private Directioner directioner;
 
-    public CenterDrawer(Directioner directioner) {
+    public CenterDrawer() {
+    }
+
+    public void setDirectioner(Directioner directioner) {
         this.directioner = directioner;
     }
 

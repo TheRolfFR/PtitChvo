@@ -4,7 +4,6 @@ import org.therolf.ptitchvo.drawer.Directioner;
 import org.therolf.ptitchvo.drawer.DiscDrawer;
 import org.therolf.ptitchvo.drawer.RectangleDrawer;
 import org.therolf.ptitchvo.drawer.TextDrawer;
-import org.therolf.ptitchvo.game.GameManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,9 +13,14 @@ import static org.therolf.ptitchvo.GameConstants.*;
 
 public class PtitChvoPanel extends JPanel {
 
+    private DiscDrawer discDrawer = new DiscDrawer();
+    private RectangleDrawer rectangleDrawer = new RectangleDrawer();
+    private Directioner textDirectioner = new Directioner(COUNT/2.f, COUNT/2.f);
+
     public PtitChvoPanel(int size) {
-        GameManager.getInstance().setGamePanel(this);
         this.resize(size);
+
+        rectangleDrawer.setSide(ECURIE);
     }
 
     @Override
@@ -31,18 +35,35 @@ public class PtitChvoPanel extends JPanel {
         int height = this.getHeight();
         int width = this.getWidth();
         int spacew = width / COUNT;
+        @SuppressWarnings("unused")
         int spaceh = height / COUNT;
 
+        // directioner
+        float centerx = COUNT / 2.f;
+        float centery = COUNT / 2.f;
+        Directioner.Direction dir;
+        Directioner moving = new Directioner(centerx, centery);
+        moving.setScale(spacew);
+
+        // drawers
+        discDrawer.setDirectioner(moving);
+        discDrawer.setScale(spacew);
+        rectangleDrawer.setDirectioner(moving);
+        rectangleDrawer.setScale(spacew);
+
+        // text
+        textDirectioner.setScale(spacew);
 
         for(int colorIndex = 0; colorIndex < colors.length; ++colorIndex) {
+            dir = Directioner.Direction.values()[(Directioner.Direction.values().length + colorIndex - 1) % Directioner.Direction.values().length];
+            moving.setDir(dir);
+
             Color color = colors[colorIndex];
             g.setColor(color);
 
-            Polygon p = new Polygon();
-            Directioner moving = new Directioner(COUNT/2.f, COUNT/2.f, Directioner.Direction.values()[(Directioner.Direction.values().length  + colorIndex - 1) % Directioner.Direction.values().length]);
-            moving.setScale(spacew);
-
             // center triangle
+            Polygon p = new Polygon();
+            moving.resetMove();
             p.addPoint(Math.round(moving.getX()), Math.round(moving.getY()));
             moving.up(0.5f);
             moving.left(0.5f);
@@ -53,10 +74,8 @@ public class PtitChvoPanel extends JPanel {
 
             // ecuries
             g.setColor(darkColors[colorIndex]);
-            RectangleDrawer rectangleDrawer = new RectangleDrawer(moving);
-            rectangleDrawer.setScale(spacew);
+            moving.resetMove();
             rectangleDrawer.setSide(ECURIE);
-            moving.setMove(0, 0);
             moving.move((.5f + 1 + ECURIE/2.f), -(.5f + 1 + ECURIE/2.f));
             rectangleDrawer.fill(g);
             rectangleDrawer.setSide(ECURIE * 0.90f);
@@ -64,7 +83,7 @@ public class PtitChvoPanel extends JPanel {
             rectangleDrawer.fill(g);
 
             // carrés centraux
-            moving.setMove(0, 0);
+            moving.resetMove();
             rectangleDrawer.setSide(CELL_SIZE);
             for(int ri = 0; ri < ECURIE; ++ri) {
                 moving.up(1);
@@ -74,10 +93,9 @@ public class PtitChvoPanel extends JPanel {
 
             // cercles
             g.setColor(darkColors[colorIndex]);
-            moving.up(1);
-            DiscDrawer discDrawer = new DiscDrawer(moving);
-            discDrawer.setScale(spacew);
             discDrawer.setDiameter(CELL_SIZE);
+
+            moving.up(1);
             discDrawer.fill(g);
             moving.right(1);
             discDrawer.fill(g);
@@ -100,13 +118,12 @@ public class PtitChvoPanel extends JPanel {
         }
 
         // text squares central
-        Directioner textDirectioner = new Directioner(COUNT/2.f, COUNT/2.f);
-        textDirectioner.setScale(spacew);
         TextDrawer textDrawer = new TextDrawer(textDirectioner, "", g);
         textDrawer.setSize(spacew, spacew);
         textDrawer.setFont("Arial Black", Font.PLAIN, 0.8f*spacew);
+
         for(int i = 0; i < colors.length; ++i) {
-            textDirectioner.setMove(0, 0);
+            textDirectioner.resetMove();
             textDirectioner.down(1);
 
             for(int ni = 6; ni > 0; --ni) {

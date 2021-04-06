@@ -5,6 +5,7 @@ import java.awt.*;
 public final class GameConstants {
     public static final int ECURIE = 6;
     public static final int COUNT = 15;
+    public static final int QUARTER = ECURIE*2 + 2;
     public static final float CELL_SIZE= 0.85f;
 
     public static final Color[] colors = {
@@ -23,7 +24,7 @@ public final class GameConstants {
 
     public static final Color TEXT_COLOR = new Color(0x818181);
 
-    public static final int MAX_STAIRS = 6;
+    public static final int MAX_STAIRS = ECURIE;
     @SuppressWarnings("PointlessArithmeticExpression")
     public static final int MAX_LENGTH = ECURIE*4 + (COUNT - ECURIE*2 - 2)*4 + 4 - 1;
 

@@ -87,6 +87,6 @@ public abstract class Player {
                 break;
         }
 
-        GameManager.actionEnded();
+        GameManager.actionEnded(this);
     }
 }

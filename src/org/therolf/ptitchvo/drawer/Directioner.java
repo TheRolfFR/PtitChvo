@@ -35,8 +35,6 @@ public class Directioner {
     public void move(float horizontal, float vertical) {
         movex += horizontal;
         movey += vertical;
-
-//        System.out.println("x: " + movex + ", y : " + movey);
     }
 
     public void left(float v) {
@@ -96,5 +94,10 @@ public class Directioner {
 
     public void resetMove() {
         setMove(0, 0);
+    }
+
+    @Override
+    public String toString() {
+        return "{ movex: " + movex + ", movey: " + movey + " x: " + getX() + ", y: " + getY() + "}";
     }
 }

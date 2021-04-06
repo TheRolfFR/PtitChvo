@@ -1,25 +1,28 @@
 package org.therolf.ptitchvo;
 
-import org.therolf.ptitchvo.drawer.Directioner;
-import org.therolf.ptitchvo.drawer.DiscDrawer;
-import org.therolf.ptitchvo.drawer.RectangleDrawer;
-import org.therolf.ptitchvo.drawer.TextDrawer;
+import org.therolf.ptitchvo.drawer.*;
+import org.therolf.ptitchvo.game.GameManager;
+import org.therolf.ptitchvo.game.Horse;
+import org.therolf.ptitchvo.game.Player;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
 
 import static org.therolf.ptitchvo.GameConstants.*;
 
 public class PtitChvoPanel extends JPanel {
 
-    private DiscDrawer discDrawer = new DiscDrawer();
-    private RectangleDrawer rectangleDrawer = new RectangleDrawer();
-    private Directioner textDirectioner = new Directioner(COUNT/2.f, COUNT/2.f);
+    private final DiscDrawer discDrawer = new DiscDrawer();
+    private final RectangleDrawer rectangleDrawer = new RectangleDrawer();
+    private final PawnDrawer pawnDrawer = new PawnDrawer();
+    private final Directioner textDirectioner = new Directioner(COUNT/2.f, COUNT/2.f);
 
     public PtitChvoPanel(int size) {
         this.resize(size);
 
+        GameManager.setGamePanel(this);
         rectangleDrawer.setSide(ECURIE);
     }
 
@@ -50,6 +53,8 @@ public class PtitChvoPanel extends JPanel {
         discDrawer.setScale(spacew);
         rectangleDrawer.setDirectioner(moving);
         rectangleDrawer.setScale(spacew);
+        pawnDrawer.setDirectioner(moving);
+        pawnDrawer.setScale(spacew * .7f);
 
         // text
         textDirectioner.setScale(spacew);
@@ -137,6 +142,69 @@ public class PtitChvoPanel extends JPanel {
             // rotates the coordinate by 90 degree counterclockwise
             AffineTransform rotate = AffineTransform.getRotateInstance(-Math.PI / 2.0, spacew * COUNT / 2.f, spacew * COUNT / 2.f);
             g2d.transform(rotate);
+        }
+
+        // pions
+        ArrayList<Player> players = GameManager.getPlayerList();
+        for (int directionIndex = 0; directionIndex < Directioner.Direction.values().length; ++directionIndex) {
+            moving.setDir(Directioner.Direction.values()[directionIndex]);
+
+            g.setColor(colors[directionIndex]);
+
+            int horseIndex = 0;
+            for(Horse h : players.get(directionIndex).getHorses()) {
+                moving.resetMove();
+
+                if(h.isInStairs()) {
+                    moving.up(MAX_STAIRS - h.getStairs());
+                } else if(h.isInStable()) {
+                    moving.setMove(-(.5f + 1 + ECURIE/2.f), -(.5f + 1 + ECURIE/2.f));
+
+                    // even horse left
+                    if(horseIndex % 2 == 0) {
+                        moving.left(1);
+                    } else {
+                        moving.right(1);
+                    }
+
+                    if(horseIndex < 2) {
+                        moving.up(1);
+                    } else {
+                        moving.down(1);
+                    }
+                } else {
+                    moving.up(MAX_STAIRS + 1);
+                    moving.right(1);
+
+                    int len = h.getLength();
+                    int i = 0;
+                    while (len/QUARTER > 0) {
+                        moving.setDir(Directioner.Direction.values()[(++i)%Directioner.Direction.values().length]);
+                        len /= QUARTER;
+                    }
+
+                    // going down
+                    int tmp = ECURIE;
+                    while(len > 0 && tmp > 0) {
+                        moving.down(1);
+                        --tmp;
+                        --len;
+                    }
+
+                    if(len > 0)
+                        tmp = ECURIE;
+                    while (len > 0 && tmp > 0) {
+                        moving.right(1);
+                        --tmp;
+                        --len;
+                    }
+
+                    moving.down(len);
+                }
+
+                pawnDrawer.draw(g);
+                ++horseIndex;
+            }
         }
     }
 

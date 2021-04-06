@@ -1,6 +1,7 @@
 package org.therolf.ptitchvo.game;
 
 import org.therolf.ptitchvo.DicePanel;
+import org.therolf.ptitchvo.PtitChvoPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,11 +12,16 @@ import static org.therolf.ptitchvo.GameConstants.*;
 public final class GameManager {
 
     private static JButton diceButton; // = null
+    private static PtitChvoPanel gamePanel;
     private static final ArrayList<Player> playerList = new ArrayList<>(4);
     private static int currentPlayerIndex;
 
     public void setDiceButton(JButton button) {
         diceButton = button;
+    }
+
+    public static void setGamePanel(PtitChvoPanel gamePanel) {
+        GameManager.gamePanel = gamePanel;
     }
 
     private static GameManager instance = null;
@@ -79,16 +85,11 @@ public final class GameManager {
             playerList.add(new AIPlayer("IA " + (playerList.size() + 1)));
         }
 
-        for(Player p : playerList) {
-            System.out.println(p);
-        }
-
         newRound(currentPlayerIndex);
 
         DicePanel.getInstance().addRollEndListener(v -> {
             Player currentPlayer = getCurrentPlayer();
             ActionPossible[] actionPossibles = currentPlayer.actionsPossible(v);
-            System.out.println(currentPlayer);
 
             if(actionPossibles.length > 0) {
                 // autoplay if real player has one action or is ai
@@ -96,21 +97,31 @@ public final class GameManager {
                     currentPlayer.act(actionPossibles[0]);
                 }
             } else {
-                actionEnded();
+                actionEnded(currentPlayer);
             }
         });
     }
 
-    public static void actionEnded() {
-        // replay
-        if(DicePanel.getLastDice() == 6) {
-            diceButton.setEnabled(true);
+    /**
+     * Action end listener
+     * @param p the player which trigerred the listener
+     */
+    public static void actionEnded(Player p) {
+        // repaint anyway
+        gamePanel.repaint();
 
-            if(GameManager.getCurrentPlayer() instanceof AIPlayer) {
-                diceButton.doClick();
+        // trigger actions if current player
+        if(p == getCurrentPlayer()) {
+            if(DicePanel.getLastDice() == 6) {
+                // replay
+                diceButton.setEnabled(true);
+
+                if(GameManager.getCurrentPlayer() instanceof AIPlayer) {
+                    diceButton.doClick();
+                }
+            } else {
+                nextPlayer();
             }
-        } else {
-            nextPlayer();
         }
     }
 
@@ -121,16 +132,20 @@ public final class GameManager {
     }
 
     private static void newRound(int playerIndex) {
-        DicePanel.getInstance().hideDice();
+//        DicePanel.getInstance().hideDice();
         DicePanel.getInstance().setPlayer(playerIndex, playerList.get(playerIndex).getName());
         diceButton.setEnabled(true);
 
         if(getCurrentPlayer() instanceof AIPlayer) {
-            diceButton.doClick();
+             diceButton.doClick();
         }
     }
 
-    public static Player getCurrentPlayer() {
+    private static Player getCurrentPlayer() {
         return playerList.get(currentPlayerIndex);
+    }
+
+    public static ArrayList<Player> getPlayerList() {
+        return playerList;
     }
 }

@@ -2,13 +2,11 @@ package org.therolf.ptitchvo.game;
 
 import org.therolf.ptitchvo.DicePanel;
 
+import static org.therolf.ptitchvo.GameConstants.MAX_LENGTH;
+
 public class Horse {
 
-    private static final int MAX_STAIRS = 6;
-    private static final int MAX_LENGTH = 55;
-
     private boolean inStable = true;
-    private int cellOffset = 0;
     private int length = 0;
     private int stairs = 1;
 
@@ -41,6 +39,14 @@ public class Horse {
 
         ++stairs;
 
+    }
+
+    public int getStairs() {
+        return stairs;
+    }
+
+    public int getLength() {
+        return length;
     }
 
     public boolean isInStable() {

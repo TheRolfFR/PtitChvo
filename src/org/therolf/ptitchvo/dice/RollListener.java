@@ -1,4 +1,4 @@
-package org.therolf.ptitchvo.listeners;
+package org.therolf.ptitchvo.dice;
 
 public interface RollListener {
     void onRollEnded(int v);

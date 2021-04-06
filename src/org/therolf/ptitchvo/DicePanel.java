@@ -1,7 +1,7 @@
 package org.therolf.ptitchvo;
 
 import org.therolf.ptitchvo.dice.DiceDrawer;
-import org.therolf.ptitchvo.listeners.RollListener;
+import org.therolf.ptitchvo.dice.RollListener;
 
 import javax.swing.*;
 import java.awt.*;

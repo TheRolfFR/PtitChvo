@@ -2,9 +2,12 @@ package org.therolf.ptitchvo;
 
 import org.therolf.ptitchvo.dice.DiceDrawer;
 import org.therolf.ptitchvo.dice.RollListener;
+import org.therolf.ptitchvo.game.GameManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -79,6 +82,36 @@ public class DicePanel extends JLabel {
             } else {
                 lastDiceValue = 1 + random.nextInt(6);
                 this.repaint();
+            }
+        });
+
+        this.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(GameConstants.DEBUG) {
+                    GameManager.AUTO_CLICK = !GameManager.AUTO_CLICK;
+                    System.out.println("AUTO_CLICK : " + GameManager.AUTO_CLICK);
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
             }
         });
     }

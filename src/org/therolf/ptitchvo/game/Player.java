@@ -1,5 +1,9 @@
 package org.therolf.ptitchvo.game;
 
+import org.therolf.ptitchvo.DicePanel;
+import org.therolf.ptitchvo.RightPanel;
+
+import java.awt.*;
 import java.util.ArrayList;
 
 import static org.therolf.ptitchvo.GameConstants.NB_HORSES;
@@ -8,6 +12,7 @@ import static org.therolf.ptitchvo.game.ActionPossible.actions.*;
 public abstract class Player {
 
     private final String name; // = ""
+    private final Color color;
     private final Horse[] horses = {new Horse(), new Horse(), new Horse(), new Horse() };
 
     @SuppressWarnings("unused")
@@ -15,8 +20,9 @@ public abstract class Player {
         return horses;
     }
 
-    public Player(String name) {
+    public Player(String name, Color color) {
         this.name = name;
+        this.color = color;
     }
 
     public int horsesIn() {
@@ -74,19 +80,29 @@ public abstract class Player {
 
     public void act(ActionPossible action) {
         Horse h = horses[action.pawnIndex];
+        String content = "cheval " + (action.pawnIndex+1) + ": ";
         switch (action.action) {
             case STAIRS_UP:
                 h.stairs();
+                content += "escalier " + h.getStairs();
                 break;
             case STABLE_OUT:
                 h.setInStable(false);
+                content += "sortie étable";
                 break;
             case MOVE:
+                content += "avance de " + DicePanel.getLastDice();
                 h.move();
             default:
                 break;
         }
 
+        RightPanel.addLog(new ActionLog(color, name, content));
+
         GameManager.actionEnded(this);
+    }
+
+    public Color getColor() {
+        return color;
     }
 }

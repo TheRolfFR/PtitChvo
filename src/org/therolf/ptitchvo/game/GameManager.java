@@ -2,6 +2,7 @@ package org.therolf.ptitchvo.game;
 
 import org.therolf.ptitchvo.DicePanel;
 import org.therolf.ptitchvo.PtitChvoPanel;
+import org.therolf.ptitchvo.RightPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +11,9 @@ import java.util.ArrayList;
 import static org.therolf.ptitchvo.GameConstants.*;
 
 public final class GameManager {
+
+    @SuppressWarnings("PointlessBooleanExpression")
+    public static boolean AUTO_CLICK = DEBUG && false;
 
     private static JButton diceButton; // = null
     private static PtitChvoPanel gamePanel;
@@ -64,7 +68,7 @@ public final class GameManager {
                 name = JOptionPane.showInputDialog(c,
                         "Saisir le nom du joueur " + (i+1), "Yann");
             }
-            playerList.add(new RealPlayer(name));
+            playerList.add(new RealPlayer(name, darkColors[playerList.size()]));
         }
 
         // nb bots
@@ -82,7 +86,7 @@ public final class GameManager {
         } while (nb < 0 || nb > (MAX_PLAYER - playerList.size()));
 
         for(i = 0; i < nb; ++i) {
-            playerList.add(new AIPlayer("IA " + (playerList.size() + 1)));
+            playerList.add(new AIPlayer("IA " + (playerList.size() + 1), darkColors[playerList.size()]));
         }
 
         newRound(currentPlayerIndex);
@@ -97,6 +101,7 @@ public final class GameManager {
                     currentPlayer.act(actionPossibles[0]);
                 }
             } else {
+                RightPanel.addLog(new ActionLog(currentPlayer.getColor(), currentPlayer.getName(), "Ne peut pas jouer"));
                 actionEnded(currentPlayer);
             }
         });
@@ -116,7 +121,7 @@ public final class GameManager {
                 // replay
                 diceButton.setEnabled(true);
 
-                if(GameManager.getCurrentPlayer() instanceof AIPlayer) {
+                if(GameManager.getCurrentPlayer() instanceof AIPlayer && AUTO_CLICK) {
                     diceButton.doClick();
                 }
             } else {
@@ -136,7 +141,7 @@ public final class GameManager {
         DicePanel.getInstance().setPlayer(playerIndex, playerList.get(playerIndex).getName());
         diceButton.setEnabled(true);
 
-        if(getCurrentPlayer() instanceof AIPlayer) {
+        if(getCurrentPlayer() instanceof AIPlayer && AUTO_CLICK) {
              diceButton.doClick();
         }
     }
